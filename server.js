@@ -1,32 +1,21 @@
-const express = require('express'); // import express
-const app = express(); // initialize express
-const celebritees = require('./celebrites.json');
-const db = require('./database');
+const express = require('express')
+const app = express()
+const cors = require('cors')
+
+//recupération routes:
+const celebriteRoute = require('./routes/celebriteRoute')
+const clientRoute = require('./routes/clientRoute')
 
 //middleware
-app.use(express.json());
+app.use(express.json())
+app.use(cors())
 
 
-app.get('/celebrites',function (req, res) {
-  res.status(200).json(celebritees);
-});
-
-app.get('/celebrites/:nom', (req, res) => {
-    let nom = req.params.id; 
-    laCelebritee = celebritees.find(celebritee => celebritee.nom === nom);
-    res.status(200).json(laCelebritee); 
-});
-
-app.post('/celebrites', async (req, res) => {
-    console.log(req.body);
-    await db.query(`INSERT INTO celebrites (nom, prenom, age) VALUES ('${req.body.nom}', '${req.body.prenom}', '${req.body.age}'`),
-    res.status(200).json(celebritees);
-});
+// appelle des routes: http://localhost:8000/celebrite/
+app.use('/celebrite', celebriteRoute)
+app.use('/client', clientRoute)
 
 
-
-
-
-app.listen(8000, () => {
-  console.log('Server is running at port 8000');
-}); // make the server listen to requests on port 3000
+app.listen(8000, function(){
+    console.log("serveur ouvert sur le port 8000");
+})
